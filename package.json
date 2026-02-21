@@ -1,0 +1,24 @@
+{
+  "name": "recall-bot",
+  "version": "1.0.0",
+  "description": "Personal academic deadline tracker — scans Gmail for assignments, exams & placements, extracts deadlines, and sends WhatsApp alerts.",
+  "main": "gmail.js",
+  "scripts": {
+    "start": "node gmail.js",
+    "scan": "node gmail.js",
+    "reminder": "node reminder.js",
+    "summary": "node summary.js",
+    "report": "node generate-report.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["gmail", "whatsapp", "deadline", "reminder", "academic"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.13.5",
+    "dotenv": "^17.3.1",
+    "googleapis": "^171.4.0",
+    "node-cron": "^4.2.1"
+  }
+}
