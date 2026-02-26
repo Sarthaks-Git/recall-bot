@@ -1,63 +1,119 @@
-const fs = require("fs");
-const path = require("path");
 const cron = require("node-cron");
+const path = require("path");
+const { loadConfig } = require("./config");
+const { loadTasks } = require("./scanner");
+const { sendRichDigest, sendUrgentAlert } = require("./whatsapp");
+const { daysLeft } = require("./utils");
 require("dotenv").config();
 
-const { sendDailySummary } = require("./whatsapp");
-const { daysLeft } = require("./utils");
+const phone = process.env.TO_PHONE_NUMBER;
 
-const TASKS_PATH = path.join(__dirname, "tasks.json");
 
-function loadTasks() {
-  if (!fs.existsSync(TASKS_PATH)) return [];
-  return JSON.parse(fs.readFileSync(TASKS_PATH, "utf8"));
+// ─── Build Digest from Tasks ──────────────────────────────────────────────────
+
+function getRelevantTasks(timeOfDay) {
+  const tasks = loadTasks();
+  const config = loadConfig();
+  const pending = tasks.filter(t => t.status === "pending");
+
+  if (timeOfDay === "morning") {
+    // Morning: show today + next 7 days (skip overdue)
+    return pending.filter(t => {
+      const dl = daysLeft(t.due);
+      return dl >= 0 && dl <= 7;
+    }).sort((a, b) => daysLeft(a.due) - daysLeft(b.due));
+  } else {
+    // Evening: show today + next 3 days (skip overdue)
+    return pending.filter(t => {
+      const dl = daysLeft(t.due);
+      return dl >= 0 && dl <= 3;
+    }).sort((a, b) => daysLeft(a.due) - daysLeft(b.due));
+  }
 }
 
-function buildSummary() {
-  const tasks = loadTasks();
 
-  let today = [];
-  let upcoming = [];
-  let urgent = [];
+// ─── Send Digest ──────────────────────────────────────────────────────────────
 
-  tasks.forEach(task => {
-    const days = daysLeft(task.due);
+async function sendDigest(timeOfDay) {
+  console.log(`\n📨 Preparing ${timeOfDay} digest...`);
 
-    if (days < 0) return; // past-due, skip
+  if (!phone) {
+    console.log("⚠️ TO_PHONE_NUMBER not set. Skipping WhatsApp.");
+    return;
+  }
 
-    if (days === 0) {
-      today.push(task.title);
-      urgent.push(task.title); // due today is also urgent
-    } else if (days <= 1) {
-      urgent.push(task.title); // due tomorrow is urgent
-    } else if (days <= 7) {
-      upcoming.push(task.title);
-    }
+  const config = loadConfig();
+  if (!config.whatsapp.enabled) {
+    console.log("⚠️ WhatsApp disabled in config.");
+    return;
+  }
+
+  const tasks = getRelevantTasks(timeOfDay);
+  console.log(`  Found ${tasks.length} relevant tasks`);
+
+  await sendRichDigest(phone, tasks, timeOfDay);
+
+  // Also send urgent alerts for anything due today/tomorrow
+  const urgentTasks = tasks.filter(t => daysLeft(t.due) <= config.priority.urgent);
+  for (const task of urgentTasks) {
+    await sendUrgentAlert({
+      phone,
+      category: task.type,
+      task: task.title,
+      due: task.due
+    });
+  }
+}
+
+
+// ─── Start Cron Jobs ──────────────────────────────────────────────────────────
+
+let morningJob = null;
+let eveningJob = null;
+
+function startReminderCrons() {
+  const config = loadConfig();
+
+  if (!config.reminders.enabled) {
+    console.log("⚠️ Reminders disabled in config.");
+    return;
+  }
+
+  // Parse times from config (format: "07:00", "21:00")
+  const [morningH, morningM] = config.reminders.morning.split(":").map(Number);
+  const [eveningH, eveningM] = config.reminders.evening.split(":").map(Number);
+
+  // Stop existing jobs if restarting
+  if (morningJob) morningJob.stop();
+  if (eveningJob) eveningJob.stop();
+
+  // Morning digest
+  morningJob = cron.schedule(`${morningM} ${morningH} * * *`, () => {
+    sendDigest("morning");
   });
 
-  return {
-    today: today.length ? today.join("\n• ") : "None",
-    upcoming: upcoming.length ? upcoming.join("\n• ") : "None",
-    urgent: urgent.length ? urgent.join("\n• ") : "None"
-  };
+  // Evening digest
+  eveningJob = cron.schedule(`${eveningM} ${eveningH} * * *`, () => {
+    sendDigest("evening");
+  });
+
+  console.log(`⏰ Reminders scheduled: Morning ${config.reminders.morning}, Evening ${config.reminders.evening}`);
 }
 
-// ⏰ Every day at 8:00 AM
-cron.schedule("0 8 * * *", async () => {
-  try {
-    const summary = buildSummary();
+function stopReminderCrons() {
+  if (morningJob) { morningJob.stop(); morningJob = null; }
+  if (eveningJob) { eveningJob.stop(); eveningJob = null; }
+}
 
-    console.log("📤 Sending daily summary...");
 
-    await sendDailySummary({
-      phone: process.env.TO_PHONE_NUMBER,
-      today: summary.today,
-      upcoming: summary.upcoming,
-      urgent: summary.urgent
-    });
+module.exports = {
+  sendDigest,
+  getRelevantTasks,
+  startReminderCrons,
+  stopReminderCrons
+};
 
-    console.log("✅ Daily summary sent");
-  } catch (err) {
-    console.error("❌ Failed to send daily summary:", err.message);
-  }
-});
+// Run directly for testing
+if (require.main === module) {
+  sendDigest("morning");
+}

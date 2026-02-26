@@ -1,0 +1,76 @@
+{
+    "scanning": {
+        "maxEmails": 25,
+        "scanIntervalMinutes": 60,
+        "sources": [
+            "gmail",
+            "classroom"
+        ]
+    },
+    "whitelist": {
+        "keywords": [
+            "assignment",
+            "quiz",
+            "tutorial",
+            "lab",
+            "lab activity",
+            "class activity",
+            "examination",
+            "mid term",
+            "midterm",
+            "term end",
+            "tee",
+            "internship",
+            "placement",
+            "hackathon",
+            "project",
+            "submission",
+            "deadline",
+            "viva",
+            "seminar",
+            "workshop",
+            "registration",
+            "endsem",
+            "midsem"
+        ],
+        "senders": []
+    },
+    "blacklist": {
+        "keywords": [
+            "club",
+            "fest",
+            "cultural",
+            "sports day",
+            "recreational",
+            "dance",
+            "music",
+            "drama",
+            "photography",
+            "literary",
+            "annual day",
+            "farewell",
+            "freshers",
+            "prom",
+            "carnival",
+            "concert",
+            "open mic",
+            "standup",
+            "comedy night"
+        ],
+        "senders": []
+    },
+    "reminders": {
+        "morning": "07:00",
+        "evening": "21:00",
+        "enabled": true
+    },
+    "priority": {
+        "urgent": 1,
+        "important": 3,
+        "normal": 7
+    },
+    "whatsapp": {
+        "enabled": true,
+        "commandPrefix": "!"
+    }
+}

@@ -1,92 +1,71 @@
 [
   {
     "type": "assignment",
-    "title": "DBMS Assignment",
-    "due": "2026-02-15"
-  },
-  {
-    "type": "exam",
-    "title": "CN Quiz",
-    "due": "2026-02-16"
-  },
-  {
-    "type": "registration",
-    "title": "Internship Registration",
-    "due": "2026-02-18"
-  },
-  {
-    "type": "assignment",
     "title": "New assignment: \"Assignment\"",
-    "due": "2026-02-28"
-  },
-  {
-    "type": "exam",
-    "title": "Re: Qualcomm online test is scheduled on 18th February 2026 by 1.30 pm - PRP 717",
-    "due": "2026-02-18"
-  },
-  {
-    "type": "exam",
-    "title": "Fwd: Qualcomm online test is scheduled on 18th February 2026 by 1.30 pm - PRP 717",
-    "due": "2026-02-18"
-  },
-  {
-    "type": "exam",
-    "title": "Jan 2026 Exam Registration Extended till Feb 20, 2026 [Set 1 -12 week courses] - 10:00 AM – Only 2 Days Left!",
-    "due": "2026-01-20"
-  },
-  {
-    "type": "other",
-    "title": "Re: Deloitte Hacksplosion 2026 – Level 1 Shortlisted Candidates & GenW.AI Workshop Details || Vellore Institute of Technology_Vellore",
-    "due": "2026-02-18"
-  },
-  {
-    "type": "other",
-    "title": "Re: Deloitte 5 pm today",
-    "due": "2026-02-18"
-  },
-  {
-    "type": "exam",
-    "title": "Jan 2026 Exam Registration Extended till Feb 20, 2026 [12 week courses] - 10:00 AM – Last day!",
-    "due": "2026-01-20"
-  },
-  {
-    "type": "other",
-    "title": "Final Reminder: NPTEL Course Payment Deadline- 20.02.2026 at 10.00am",
-    "due": "2026-02-20"
-  },
-  {
-    "type": "other",
-    "title": "Re: Boeing Next round of selection process is scheduled on 19.02.2026",
-    "due": "2026-02-18"
-  },
-  {
-    "type": "other",
-    "title": "AIRM 2 || Matrix Club || 22nd February 2026",
-    "due": "2026-02-22"
+    "due": "2026-02-28",
+    "id": "7c1862fd-0fa2-4ed9-9e95-878b5082a0d0",
+    "status": "pending",
+    "source": "gmail",
+    "summary": "New assignment: \"Assignment\""
   },
   {
     "type": "other",
     "title": "Welcome to Your AWS Skill Builder Digital Team Subscription",
-    "due": "2026-07-16"
-  },
-  {
-    "type": "other",
-    "title": "Re: Calling All Innovators! Caterpillar Tech Challenge 2026 is HERE! - 2027 -2030 pass outs only",
-    "due": "2026-02-16"
-  },
-  {
-    "type": "registration",
-    "title": "Re: M-STEM Scholarship - Apply Now!",
-    "due": "2026-02-13"
-  },
-  {
-    "type": "other",
-    "title": "Re: Sandisk hackathon",
-    "due": "2026-02-13"
+    "due": "2026-07-16",
+    "id": "e393f1f5-e8e7-4dce-9dbc-fb1c224a54d2",
+    "status": "pending",
+    "source": "gmail",
+    "summary": "Welcome to Your AWS Skill Builder Digital Team Subscription"
   },
   {
     "type": "assignment",
     "title": "New assignment: \"Lab 6: Implementation of JDBC…\"",
-    "due": "2026-02-27"
+    "due": "2026-02-27",
+    "id": "42996e8c-e0c4-4857-965a-a3625975b061",
+    "status": "pending",
+    "source": "gmail",
+    "summary": "New assignment: \"Lab 6: Implementation of JDBC…\""
+  },
+  {
+    "id": "99d9bec7-319b-4844-b989-1d58d7cef8bb",
+    "source": "gmail",
+    "messageId": "19a7b8094d3efaff",
+    "type": "registration",
+    "title": "University of Southern California- USA | upcoming session scheduled for 13th Nov'25, 8.30PM IST",
+    "summary": "University of Southern California- USA | upcoming session scheduled for 13th Nov'25, 8.30PM IST",
+    "due": "2026-11-13",
+    "sender": "\"Senior Asst Director, International Relations\" <sr.ad@vitbhopal.ac.in>",
+    "priority": "low",
+    "status": "pending",
+    "confidence": 0.7,
+    "createdAt": "2026-02-22T06:50:55.463Z"
+  },
+  {
+    "id": "3a6ca33a-fc58-4231-ac24-cbf84b40e22e",
+    "source": "classroom",
+    "messageId": "classroom_824098686376_845235737341",
+    "type": "assignment",
+    "title": "[BL2025260500378_AJP] Assignment",
+    "summary": "[BL2025260500378_AJP] Assignment",
+    "due": "2026-02-28",
+    "sender": "BL2025260500378_AJP",
+    "priority": "normal",
+    "status": "pending",
+    "confidence": 1,
+    "createdAt": "2026-02-22T07:05:16.472Z"
+  },
+  {
+    "id": "ff0199b2-90d1-4e07-94c4-177e224f5ae6",
+    "source": "classroom",
+    "messageId": "classroom_824098686376_845647260924",
+    "type": "assignment",
+    "title": "[BL2025260500378_AJP] Lab 6: Implementation of JDBC connection with MySql/Oracle",
+    "summary": "[BL2025260500378_AJP] Lab 6: Implementation of JDBC connection with MySql/Oracle",
+    "due": "2026-02-27",
+    "sender": "BL2025260500378_AJP",
+    "priority": "normal",
+    "status": "pending",
+    "confidence": 1,
+    "createdAt": "2026-02-22T07:05:16.760Z"
   }
 ]

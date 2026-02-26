@@ -1,24 +1,36 @@
 {
   "name": "recall-bot",
-  "version": "1.0.0",
-  "description": "Personal academic deadline tracker — scans Gmail for assignments, exams & placements, extracts deadlines, and sends WhatsApp alerts.",
-  "main": "gmail.js",
+  "version": "2.0.0",
+  "description": "AI-powered academic deadline assistant — scans Gmail & Google Classroom, classifies with Gemini AI, sends WhatsApp alerts with summaries, and provides a web dashboard.",
+  "main": "index.js",
   "scripts": {
-    "start": "node gmail.js",
-    "scan": "node gmail.js",
-    "reminder": "node reminder.js",
-    "summary": "node summary.js",
+    "start": "node index.js",
+    "dev": "node index.js",
+    "scan": "node scanner.js",
     "report": "node generate-report.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["gmail", "whatsapp", "deadline", "reminder", "academic"],
+  "keywords": [
+    "gmail",
+    "whatsapp",
+    "deadline",
+    "reminder",
+    "academic",
+    "ai",
+    "gemini",
+    "classroom"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.13.5",
     "dotenv": "^17.3.1",
+    "express": "^5.1.0",
     "googleapis": "^171.4.0",
-    "node-cron": "^4.2.1"
+    "mongodb": "^7.1.0",
+    "node-cron": "^4.2.1",
+    "uuid": "^11.1.0"
   }
 }
