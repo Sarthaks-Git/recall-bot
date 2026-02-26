@@ -1,5 +1,4 @@
 const cron = require("node-cron");
-const path = require("path");
 const { loadConfig } = require("./config");
 const { loadTasks } = require("./scanner");
 const { sendRichDigest, sendUrgentAlert } = require("./whatsapp");
@@ -8,12 +7,11 @@ require("dotenv").config();
 
 const phone = process.env.TO_PHONE_NUMBER;
 
-
 // ─── Build Digest from Tasks ──────────────────────────────────────────────────
 
-function getRelevantTasks(timeOfDay) {
-  const tasks = loadTasks();
-  const config = loadConfig();
+async function getRelevantTasks(timeOfDay) {
+  const tasks = await loadTasks();
+  const config = await loadConfig();
   const pending = tasks.filter(t => t.status === "pending");
 
   if (timeOfDay === "morning") {
@@ -31,37 +29,42 @@ function getRelevantTasks(timeOfDay) {
   }
 }
 
-
-// ─── Send Digest ──────────────────────────────────────────────────────────────
+// ─── Send Digest ───
 
 async function sendDigest(timeOfDay) {
-  console.log(`\n📨 Preparing ${timeOfDay} digest...`);
+  try {
+    console.log(`\n📨 Preparing ${timeOfDay} digest...`);
 
-  if (!phone) {
-    console.log("⚠️ TO_PHONE_NUMBER not set. Skipping WhatsApp.");
-    return;
-  }
+    if (!phone) {
+      console.log("⚠️ TO_PHONE_NUMBER not set. Skipping WhatsApp.");
+      return;
+    }
 
-  const config = loadConfig();
-  if (!config.whatsapp.enabled) {
-    console.log("⚠️ WhatsApp disabled in config.");
-    return;
-  }
+    const config = await loadConfig();
+    if (!config.whatsapp?.enabled) {
+      console.log("⚠️ WhatsApp disabled in config.");
+      return;
+    }
 
-  const tasks = getRelevantTasks(timeOfDay);
-  console.log(`  Found ${tasks.length} relevant tasks`);
+    const tasks = await getRelevantTasks(timeOfDay);
+    console.log(`  Found ${tasks.length} relevant tasks`);
 
-  await sendRichDigest(phone, tasks, timeOfDay);
+    await sendRichDigest(phone, tasks, timeOfDay);
 
-  // Also send urgent alerts for anything due today/tomorrow
-  const urgentTasks = tasks.filter(t => daysLeft(t.due) <= config.priority.urgent);
-  for (const task of urgentTasks) {
-    await sendUrgentAlert({
-      phone,
-      category: task.type,
-      task: task.title,
-      due: task.due
-    });
+    // Also send urgent alerts for anything due today/tomorrow
+    const urgentTasks = tasks.filter(t => daysLeft(t.due) <= (config.priority?.urgent || 1));
+    for (const task of urgentTasks) {
+      await sendUrgentAlert({
+        phone,
+        category: task.type,
+        task: task.title,
+        due: task.due
+      });
+    }
+
+  } catch (err) {
+    console.error("❌ SendDigest Fatal Error:", err);
+    throw err;
   }
 }
 
@@ -71,17 +74,17 @@ async function sendDigest(timeOfDay) {
 let morningJob = null;
 let eveningJob = null;
 
-function startReminderCrons() {
-  const config = loadConfig();
+async function startReminderCrons() {
+  const config = await loadConfig();
 
-  if (!config.reminders.enabled) {
+  if (!config.reminders?.enabled) {
     console.log("⚠️ Reminders disabled in config.");
     return;
   }
 
   // Parse times from config (format: "07:00", "21:00")
-  const [morningH, morningM] = config.reminders.morning.split(":").map(Number);
-  const [eveningH, eveningM] = config.reminders.evening.split(":").map(Number);
+  const [morningH, morningM] = (config.reminders.morning || "07:00").split(":").map(Number);
+  const [eveningH, eveningM] = (config.reminders.evening || "21:00").split(":").map(Number);
 
   // Stop existing jobs if restarting
   if (morningJob) morningJob.stop();
