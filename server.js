@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+// Serve the built React frontend in production
+app.use(express.static(path.join(__dirname, "client", "dist")));
 
 
 // ─── API: Auth ────────────────────────────────────────────────────────────────
@@ -225,10 +226,9 @@ app.post("/api/digest/:time", async (req, res) => {
 app.use(webhook);
 
 
-// ─── SPA fallback ─────────────────────────────────────────────────────────────
-
+// ─── SPA fallback ───
 app.get("/{*path}", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
 
